@@ -1,14 +1,15 @@
 
 class PID:
 
-    def __init__(self, setpoint:float = 0, P: float = 0, I: float = 0,  D: float = 0):
+    def __init__(self, setpoint:float = 0.0, P: float = 0.0, I: float = 0,  D: float = 0.0):
         self.setpoint = setpoint
         self.P = P
         self.I = I
         self.D = D
 
-        self.integral = 0
-        self.previous_error = 0
+        self.integral = 0.0
+        self.previous_error = 0.0
+        self.process_value = 0.0
 
 
     def update_constants(self, setpoint:float = None, P: float = None, I: float = None,  D: float = None) -> None:
@@ -34,6 +35,7 @@ class PID:
         :param change_in_time:      Time since last measurement
         :return:                    Control value which affects the process value
         """
+        self.process_value = process_value
 
         self.error = process_value - self.setpoint
         self.derivative = (self.error - self.previous_error) / change_in_time
