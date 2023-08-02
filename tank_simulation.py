@@ -5,9 +5,14 @@ import datetime
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+from PID import PID
+
+
 tank_level = 50  # Measured in percentage
 MEASUREMENT_PERIOD = 0.1  # Time between "measurements" (seconds)
-output_flow = 4  # 0-12 cm^3/sec 
+# output_flow = 4  # 0-12 cm^3/sec 
+
+tank_pid = PID(setpoint=75, P=1.0, I=1.2, D=0)
 
 # Create figure for plotting
 fig = plt.figure()
@@ -17,8 +22,11 @@ y_tank_level = []
 
 # This function is called periodically from FuncAnimation
 def animate(i, x_time, y_tank_level):
-    input_flow = random.random() * 8 # 0-8 cm^3/sec
     global tank_level  # TODO: change this to not be global
+    global tank_pid  # TODO: change this to not be global
+
+    input_flow = random.random() * 8 # 0-8 cm^3/sec
+    output_flow = tank_pid.update_control_value(tank_level, MEASUREMENT_PERIOD)
     tank_level += (input_flow - output_flow) * MEASUREMENT_PERIOD
     print(tank_level)
     
@@ -29,7 +37,7 @@ def animate(i, x_time, y_tank_level):
     x_time = x_time[-200:]
     y_tank_level = y_tank_level[-200:]
 
-        # Draw x and y lists
+    # Draw x and y lists
     ax.clear()
     ax.plot(x_time, y_tank_level)
 
