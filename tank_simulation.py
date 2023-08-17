@@ -11,7 +11,6 @@ from PIDTunerGui import PIDTunerGui
 
 tank_level = 50  # Measured in percentage
 MEASUREMENT_PERIOD = 0.1  # Time between "measurements" (seconds)
-# output_flow = 4  # 0-12 cm^3/sec 
 
 tank_pid = PID(setpoint=75, P=1.0, I=1.0, D=0.0)
 
@@ -57,8 +56,8 @@ def animate(i, x_time, y_tank_level):
 
 
 # Set up plot to call animate() function periodically
-#ani = animation.FuncAnimation(fig, animate, fargs=(x_time, y_tank_level), interval= MEASUREMENT_PERIOD * 1000)
-#plt.show()
+ani = animation.FuncAnimation(fig, animate, fargs=(x_time, y_tank_level), interval= MEASUREMENT_PERIOD * 1000)
+plt.show()
 
 
 
