@@ -35,14 +35,16 @@ class PIDTunerGui:
         proccess_frame = tk.Frame(self.gui)
         proccess_frame.pack()
         tk.Label(proccess_frame, text = 'Process Value').pack(side=tk.LEFT)
-        tk.Label(proccess_frame, text = self.PID.process_value, fg="black", bg="yellow").pack(side=tk.LEFT)
+        tk.Label(proccess_frame, text = self.PID.process_value, fg="black", bg="yellow")\
+            .pack(side=tk.LEFT)
 
 
         # Setpoint
         setpoint_frame = tk.Frame(self.gui)
         setpoint_frame.pack()
         tk.Label(setpoint_frame, text = 'Setpoint Value').pack(side=tk.LEFT)
-        tk.Label(setpoint_frame, text = self.PID.setpoint, fg="black", bg="yellow").pack(side=tk.LEFT)
+        tk.Label(setpoint_frame, text = self.PID.setpoint, fg="black", bg="yellow")\
+            .pack(side=tk.LEFT)
         setpoint_input =tk.Entry(setpoint_frame)
         setpoint_input.pack()
 

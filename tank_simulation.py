@@ -56,7 +56,8 @@ def animate(i, x_time, y_tank_level):
 
 
 # Set up plot to call animate() function periodically
-ani = animation.FuncAnimation(fig, animate, fargs=(x_time, y_tank_level), interval= MEASUREMENT_PERIOD * 1000)
+ani = animation.FuncAnimation(fig, animate, fargs=(x_time, y_tank_level), 
+                              interval=MEASUREMENT_PERIOD * 1000)
 plt.show()
 
 
