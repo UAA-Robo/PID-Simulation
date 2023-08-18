@@ -12,7 +12,7 @@ from PIDTunerGui import PIDTunerGui
 tank_level = 50  # Measured in percentage
 MEASUREMENT_PERIOD = 0.1  # Time between "measurements" (seconds)
 
-tank_pid = PID(setpoint=75, P=1.0, I=1.0, D=0.0)
+tank_pid = PID(setpoint=75, P=1.0, I=1.5, D=0.0)
 
 
 # PID GUI

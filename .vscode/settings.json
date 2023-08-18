@@ -1,5 +1,11 @@
 {
     "editor.rulers": [
         100
+    ],
+    "cSpell.words": [
+        "fargs",
+        "textvariable",
+        "xticks",
+        "ylabel"
     ]
 }

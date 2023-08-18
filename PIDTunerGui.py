@@ -4,24 +4,31 @@ class PIDTunerGui:
     def __init__(self, PID: PID):
         self.PID = PID
 
-    def constant_input(self, name, value):
+    def display_PID_parameter(self, PID_parameter, HAS_INPUT: bool = True, HAS_BUTTONS: bool = True):
         frame = tk.Frame(self.gui)
         frame.pack()
 
-        tk.Label(frame, text = name).pack(side=tk.LEFT)
-        tk.Label(frame, text = value, fg="black", bg="yellow").pack(side=tk.LEFT)
+        name = tk.Label(frame, text = PID_parameter.name)
+        value = tk.Label(frame, text = PID_parameter.value, fg="black", bg="yellow")
+        name.pack(side=tk.LEFT)
+        value.pack(side=tk.LEFT)
+
         
-        increment_button = tk.Button(frame, text = "+ 0.1")
-        increment_button.pack(side=tk.LEFT)
+        if HAS_BUTTONS:
+            def update_value_text():
+                value['text'] = f"{PID_parameter.value:.1f}"
+            increment_button = tk.Button(frame, text = f"+ {PID_parameter.adjust_amount}", 
+                                command=lambda:(PID_parameter.increment_value(), update_value_text()))
+            decrement_button = tk.Button(frame, text = f"- {PID_parameter.adjust_amount}",
+                                command=lambda:(PID_parameter.decrement_value(), update_value_text()))
+            
+            increment_button.pack(side=tk.LEFT)
+            decrement_button.pack(side=tk.LEFT)
 
-        decrement_button = tk.Button(frame, text = "- 0.1")
-        decrement_button.pack(side=tk.LEFT)
+        if HAS_INPUT:
+            input=tk.Entry(frame)
+            input.pack()
 
-        input=tk.Entry(frame)
-        input.pack()
-
-
-        return ""
 
     def set_gui_layout(self):
         self.gui = tk.Tk()
@@ -31,27 +38,28 @@ class PIDTunerGui:
         self.gui.title("PID Tuner")
         tk.Label(self.gui, text ="PID GUI").pack()
 
-        # Process
-        proccess_frame = tk.Frame(self.gui)
-        proccess_frame.pack()
-        tk.Label(proccess_frame, text = 'Process Value').pack(side=tk.LEFT)
-        tk.Label(proccess_frame, text = self.PID.process_value, fg="black", bg="yellow")\
-            .pack(side=tk.LEFT)
+        # # Process
+        # process_frame = tk.Frame(self.gui)
+        # process_frame.pack()
+        # tk.Label(process_frame, text = 'Process Value').pack(side=tk.LEFT)
+        # tk.Label(process_frame, text = self.PID.process.value, fg="black", bg="yellow")\
+        #     .pack(side=tk.LEFT)
 
 
-        # Setpoint
-        setpoint_frame = tk.Frame(self.gui)
-        setpoint_frame.pack()
-        tk.Label(setpoint_frame, text = 'Setpoint Value').pack(side=tk.LEFT)
-        tk.Label(setpoint_frame, text = self.PID.setpoint, fg="black", bg="yellow")\
-            .pack(side=tk.LEFT)
-        setpoint_input =tk.Entry(setpoint_frame)
-        setpoint_input.pack()
+        # # Setpoint
+        # setpoint_frame = tk.Frame(self.gui)
+        # setpoint_frame.pack()
+        # tk.Label(setpoint_frame, text = self.PID.setpoint.name).pack(side=tk.LEFT)
+        # tk.Label(setpoint_frame, text = self.PID.setpoint.value, fg="black", bg="yellow")\
+        #     .pack(side=tk.LEFT)
+        # setpoint_input =tk.Entry(setpoint_frame)
+        # setpoint_input.pack()
 
-
-        self.constant_input('P', self.PID.P)
-        self.constant_input('I', self.PID.I)
-        self.constant_input('D', self.PID.D)
+        self.display_PID_parameter(self.PID.process, HAS_INPUT=False, HAS_BUTTONS=False)
+        self.display_PID_parameter(self.PID.setpoint, HAS_BUTTONS=False)
+        self.display_PID_parameter(self.PID.P)
+        self.display_PID_parameter(self.PID.I)
+        self.display_PID_parameter(self.PID.D)
         
 
 
