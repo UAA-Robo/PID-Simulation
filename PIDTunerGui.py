@@ -34,39 +34,14 @@ class PIDTunerGui:
         self.gui = tk.Tk()
         self.gui.geometry("400x400")
 
-
         self.gui.title("PID Tuner")
         tk.Label(self.gui, text ="PID GUI").pack()
-
-        # # Process
-        # process_frame = tk.Frame(self.gui)
-        # process_frame.pack()
-        # tk.Label(process_frame, text = 'Process Value').pack(side=tk.LEFT)
-        # tk.Label(process_frame, text = self.PID.process.value, fg="black", bg="yellow")\
-        #     .pack(side=tk.LEFT)
-
-
-        # # Setpoint
-        # setpoint_frame = tk.Frame(self.gui)
-        # setpoint_frame.pack()
-        # tk.Label(setpoint_frame, text = self.PID.setpoint.name).pack(side=tk.LEFT)
-        # tk.Label(setpoint_frame, text = self.PID.setpoint.value, fg="black", bg="yellow")\
-        #     .pack(side=tk.LEFT)
-        # setpoint_input =tk.Entry(setpoint_frame)
-        # setpoint_input.pack()
 
         self.display_PID_parameter(self.PID.process, HAS_INPUT=False, HAS_BUTTONS=False)
         self.display_PID_parameter(self.PID.setpoint, HAS_BUTTONS=False)
         self.display_PID_parameter(self.PID.P)
         self.display_PID_parameter(self.PID.I)
         self.display_PID_parameter(self.PID.D)
-        
-
-
-        # redbutton = tk.Button(frame, text = 'Red', fg ='red')
-        # redbutton.pack(side = tk.LEFT)
-        # greenbutton = tk.Button(frame, text = 'Brown', fg='brown')
-        # greenbutton.pack(side = tk.LEFT )
 
 
     def start_gui(self):
