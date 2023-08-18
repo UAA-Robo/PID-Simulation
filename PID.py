@@ -4,17 +4,20 @@ class PIDValue:
         self.name = name
         self.adjust_amount = adjust_amount
 
-    def increment_value(self):
+    def increment_value(self) -> None:
         if not self.adjust_amount:
             return
         self.value += self.adjust_amount
         print("increment", self.name, self.value)
 
-    def decrement_value(self):
+    def decrement_value(self) -> None:
         if not self.adjust_amount:
             return
         self.value -= self.adjust_amount
         print("decrement", self.name, self.value)
+    
+    def set_value(self, value:float) -> None:
+        self.value = float(value)
 
 
 class PID:
@@ -55,7 +58,7 @@ class PID:
         """ Approximation of PID to change the control value based on the new value.
         @param process_value    Value is affected by the control value (what want to reach the 
                                 setpoint).
-        @param change_in_time    Time since last measurement.
+        @param change_in_time    Time since last measurement in seconds.
         @return    Control value which affects the process value. 
         """
 
