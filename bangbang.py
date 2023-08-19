@@ -1,4 +1,4 @@
-class noPID:
+class bangbang:
     class PIDValue:
         def __init__(self, value: float, name: str, adjust_amount: float = None):
             self._value = value
