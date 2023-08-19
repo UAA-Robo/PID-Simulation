@@ -30,3 +30,4 @@ if __name__ == '__main__':
     simulator_thread.start()
     gui.start_gui()
 
+# TEST comment 3
