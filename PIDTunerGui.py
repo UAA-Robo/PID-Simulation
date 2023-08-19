@@ -18,15 +18,8 @@ class PIDTunerGui:
         self.gui.mainloop()
 
     def set_gui_layout(self):
+        # GUI
         self.gui = tk.Tk()
-
-        plt.rc('font', **{'size': 6})
-        self.fig = plt.figure(layout='tight')
-        
-        self.subplot = self.fig.add_subplot(1, 1, 1)
-        
-        self.canvas = FigureCanvasTkAgg(self.fig, master = self.gui) 
-    
         self.gui.geometry("800x600")
         self.gui.title("PID Tuner")
         tk.Label(self.gui, text ="PID GUI").pack()
@@ -36,6 +29,13 @@ class PIDTunerGui:
         self.display_PID_parameter(self.PID.P())
         self.display_PID_parameter(self.PID.I())
         self.display_PID_parameter(self.PID.D())
+
+        # Plot
+        self.fig = plt.figure(layout='tight')
+        self.subplot = self.fig.add_subplot(1, 1, 1)
+        self.canvas = FigureCanvasTkAgg(self.fig, master = self.gui) 
+
+
 
 
     def display_PID_parameter(self, PID_parameter, HAS_INPUT: bool = True, HAS_BUTTONS: bool = True):
@@ -77,27 +77,24 @@ class PIDTunerGui:
         """ Update gui text """
         self.process_text['text'] = f"{self.PID.process().value():.1f}"
 
-        """ Update graph """
-        # hour:minute:seconds.decisecond (1/10th of a second) 
+        """ Get recent process value """
         self.x_time.append(datetime.now()) 
         self.y_process_value.append(self.PID.process().value())
-
         # Limit x and y lists to 200 items
         self.x_time = self.x_time[-200:]
         self.y_process_value = self.y_process_value[-200:]
 
+        """ Plot data """
         # Draw x and y lists
         self.subplot.clear()
         self.subplot.plot(self.x_time, self.y_process_value)
         self.subplot.xaxis_date()
-
         plt.xticks(rotation=45, ha='right')
+        plt.rc('font', **{'size': 6})
         plt.title(self.PID.process().name())
         plt.xlabel('Time')
         plt.ylabel(self.PID.process().name() + '(%)')
 
-
-        
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(padx=10, pady=10)
 
