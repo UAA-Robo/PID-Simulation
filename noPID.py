@@ -1,4 +1,4 @@
-class PID:
+class noPID:
     class PIDValue:
         def __init__(self, value: float, name: str, adjust_amount: float = None):
             self._value = value
@@ -84,13 +84,20 @@ class PID:
         # Variables that don't have to be kept over time are not stored in the class
         self._process.set_value(process_value)
 
-        error = self._process.value() - self._setpoint.value()
-        derivative = (error - self._previous_error) / change_in_time
-        self._integral += error  * change_in_time
+        #if tank level below setpoint, control value max
+        #elif tank level above setpoint, control value min
+        if self._process.value() < self._setpoint.value():
+            self._control.set_value(0)
+        elif self._process.value() >= self._setpoint.value():
+            self._control.set_value(20)
 
-        self._previous_error = error
+        # error = self._process.value() - self._setpoint.value()
+        # derivative = (error - self._previous_error) / change_in_time
+        # self._integral += error  * change_in_time
 
-        self._control.set_value(self._P.value() * error + self._I.value() * self._integral
-            + self._D.value() * derivative)
+        # self._previous_error = error
+
+        # self._control.set_value(self._P.value() * error + self._I.value() * self._integral
+        #     + self._D.value() * derivative)
 
         return self._control.value()
