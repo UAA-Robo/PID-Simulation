@@ -6,6 +6,7 @@
         "fargs",
         "textvariable",
         "tkagg",
+        "xlabel",
         "xticks",
         "ylabel"
     ]
