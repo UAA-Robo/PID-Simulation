@@ -48,7 +48,6 @@ class PIDTunerGui:
         value.pack(side=tk.LEFT)
 
         def update_value_text():
-            print("----HERE", PID_parameter.value)
             value['text'] = f"{PID_parameter.value:.1f}"
         
         if HAS_BUTTONS:
