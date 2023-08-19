@@ -14,7 +14,7 @@ def update_tank_level(pid:PID) -> None:
         input_flow = random.random() * 8 # 0-8 cm^3/sec
         output_flow = pid.update_control_value(tank_level, MEASUREMENT_PERIOD)
         tank_level += (input_flow - output_flow) * MEASUREMENT_PERIOD
-        print(f"Flow In: {input_flow:.2f} |   Flow Out: {output_flow:.2f} | Tank level: {tank_level:.2f}")
+        #print(f"Flow In: {input_flow:.2f} |   Flow Out: {output_flow:.2f} | Tank level: {tank_level:.2f}")
         sleep(MEASUREMENT_PERIOD)
 
 
