@@ -1,10 +1,10 @@
 import tkinter as tk
-from PID import PID
-from BangBang import BangBang
+from Controllers.PID import PID
+from Controllers.BangBang import BangBang
 import matplotlib.pyplot as plt
 from datetime import datetime
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from ControllerParameter import ControllerParameter
+from Controllers.ControllerParameter import ControllerParameter
 
 class ControllerGUI:
     """

@@ -1,4 +1,4 @@
-from Controller import Controller
+from Controllers.Controller import Controller
 
 class BangBang(Controller):
     """

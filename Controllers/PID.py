@@ -1,5 +1,5 @@
-from Controller import Controller
-from ControllerParameter import ControllerParameter 
+from Controllers.Controller import Controller
+from Controllers.ControllerParameter import ControllerParameter 
 
 class PID(Controller):
     """

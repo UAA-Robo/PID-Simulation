@@ -1,4 +1,4 @@
-from ControllerParameter import ControllerParameter
+from Controllers.ControllerParameter import ControllerParameter
 
 class Controller:
     """

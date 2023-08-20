@@ -1,7 +1,7 @@
 import threading
 from time import sleep
-from BangBang import BangBang
-from PID import PID
+from Controllers.BangBang import BangBang
+from Controllers.PID import PID
 import random
 from ControllerGUI import ControllerGUI
 
