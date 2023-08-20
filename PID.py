@@ -1,43 +1,15 @@
+from ControllerValue import ControllerValue 
+
 class PID:
-    class PIDValue:
-        def __init__(self, value: float, name: str, adjust_amount: float = None):
-            self._value = value
-            self._name = name
-            self._adjust_amount = adjust_amount
-
-        def increment_value(self) -> None:
-            if not self._adjust_amount:
-                return
-            self._value += self._adjust_amount
-
-        def decrement_value(self) -> None:
-            if not self._adjust_amount:
-                return
-            self._value -= self._adjust_amount
-        
-        # Getters and Setters
-        @property
-        def value(self): return self._value
-        @value.setter
-        def value(self, value): self._value = float(value)
-
-        @property
-        def name(self): return self._name
-
-        @property
-        def adjust_amount(self): return self._adjust_amount
-        @adjust_amount.setter
-        def adjust_amount(self, value): self._adjust_amount = float(value)
-
 
     def __init__(self, setpoint:float = 0.0, P: float = 0.0, I: float = 0,  D: float = 0.0):
         
-        self._setpoint = self.PIDValue(setpoint, "Setpoint", 0.1)
-        self._P = self.PIDValue(P, "P", 0.1)
-        self._I = self.PIDValue(I, "I", 0.1)
-        self._D = self.PIDValue(D, "D", 0.1)
-        self._process = self.PIDValue(0, "Process Value")
-        self._control = self.PIDValue(0, "Control Value")
+        self._setpoint = ControllerValue(setpoint, "Setpoint", 0.1)
+        self._P = ControllerValue(P, "P", 0.1)
+        self._I = ControllerValue(I, "I", 0.1)
+        self._D = ControllerValue(D, "D", 0.1)
+        self._process = ControllerValue(0, "PID Process Value")
+        self._control = ControllerValue(0, "PID Control Value")
 
         self._integral = 0.0
         self._previous_error = 0.0
