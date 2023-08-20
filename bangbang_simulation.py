@@ -3,8 +3,7 @@ from time import sleep
 from BangBang import BangBang
 from PID import PID
 import random
-from PIDTunerGui import PIDTunerGui
-from bangbangGUI import bangbangGUI
+from ControllerGUI import ControllerGUI
 
 
 def update_tank_level(controller:PID|BangBang) -> None:
@@ -23,7 +22,7 @@ def update_tank_level(controller:PID|BangBang) -> None:
 if __name__ == '__main__':
     tank_pid = PID(setpoint=25, P=1.5, I=1.2, D=0.0)
     tank_bang_bang = BangBang(setpoint=25, control_low=0, control_high=20)
-    gui = bangbangGUI(PID=tank_pid, bang_bang=tank_bang_bang)
+    gui = ControllerGUI(pid=tank_pid, bang_bang=tank_bang_bang)
     IS_RUNNING = [True]
     
     # Thread is daemon to exit when the gui exits
