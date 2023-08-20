@@ -9,7 +9,7 @@ class PID(Controller):
         self._P = ControllerValue(P, "P", 0.1)
         self._I = ControllerValue(I, "I", 0.1)
         self._D = ControllerValue(D, "D", 0.1)
-        self.tuning_values = [self._P, self._I, self._D]
+        self._tuning_parameters = [self._P, self._I, self._D]
 
         self._integral = 0.0
         self._previous_error = 0.0

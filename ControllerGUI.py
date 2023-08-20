@@ -7,11 +7,18 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from ControllerValue import ControllerValue
 
 class ControllerGUI:
-    def __init__(self, pid: PID, bang_bang: BangBang):
-        self.pid = pid
-        self.bang_bang = bang_bang
+    '''pid: PID, bang_bang: BangBang'''
+    def __init__(self, controllers:list ):
 
-        self.x_time, self.y_process_value1, self.y_process_value2 = [], [], []
+        #self.pid = pid
+        #self.bang_bang = bang_bang
+        self.controllers = controllers
+
+        self.x_time = []
+        self.y_process_values = []
+        for _ in range(len(controllers)):
+            self.y_process_values.append([])
+
         self.MEASUREMENT_PERIOD = 0.2  # Time between "measurements" (seconds)
         self.set_gui_layout()
 
@@ -26,15 +33,23 @@ class ControllerGUI:
         self.gui.title("Controller Tuner")
         tk.Label(self.gui, text ="Controller GUI").pack()
 
-        self.process_text = self.display_controller_parameter(self.pid.process, HAS_INPUT=False, HAS_BUTTONS=False)
-        self.display_controller_parameter(self.pid.setpoint, HAS_BUTTONS=False)
-        self.display_controller_parameter(self.pid.P)
-        self.display_controller_parameter(self.pid.I)
-        self.display_controller_parameter(self.pid.D)
+        self.process_texts = []
+        for controller in self.controllers:
+            tk.Label(self.gui, text=controller.controller_name).pack()
+            self.process_texts.append(
+                self.display_controller_parameter(controller.process, 
+                                                  HAS_INPUT=False, HAS_BUTTONS=False))
+
+            self.display_controller_parameter(controller.setpoint, HAS_BUTTONS=False)
+
+            for tuning_parameters in controller.tuning_parameters:
+                self.display_controller_parameter(tuning_parameters)
+
 
         # Plot
-        #self.fig = plt.figure(layout='tight')
-        self.fig, (self.ax1, self.ax2) = plt.subplots(1, 2)
+        self.fig = plt.figure(layout='tight')
+        self.subplot = self.fig.add_subplot(1, 1, 1)
+        #self.fig, (self.ax1, self.ax2) = plt.subplots(1, 2)
         self.fig.set_figwidth(15)
         self.canvas = FigureCanvasTkAgg(self.fig, master = self.gui) 
 
@@ -78,30 +93,38 @@ class ControllerGUI:
     def update_values_continuously(self):
         
         """ Update gui text """
-        self.process_text['text'] = f"{self.pid.process.value:.1f}"
+        for controller_process_text, controller in zip(self.process_texts, self.controllers):
+            controller_process_text['text'] = f"{controller.process.value:.1f}"
 
         """ Get recent process value """
-        self.x_time.append(datetime.now()) 
-        self.y_process_value1.append(self.pid.process.value)
-        self.y_process_value2.append(self.bang_bang.process.value)
-        # Limit x and y lists to 200 items
-        self.x_time = self.x_time[-200:]
-        self.y_process_value1 = self.y_process_value1[-200:]
-        self.y_process_value2 = self.y_process_value2[-200:]
+        self.x_time.append(datetime.now())
+        self.x_time = self.x_time[-200:] # Limit to 200 items
+        for controller, controller_process_values in zip(self.controllers, self.y_process_values):
+            controller_process_values.append(controller.process.value)
+            controller_process_values = controller_process_values[-200:]
+
 
         """ Plot data """
         # Draw x and y lists
-        self.ax1.clear()
-        self.ax1.plot(self.x_time, self.y_process_value1)
-        self.ax1.xaxis_date()
-        self.ax2.clear()
-        self.ax2.plot(self.x_time, self.y_process_value2)
-        self.ax2.xaxis_date()
+
+        # self.ax1.clear()
+        # self.ax1.plot(self.x_time, self.y_process_values[0])
+        # self.ax1.xaxis_date()
+        # self.ax2.clear()
+        # self.ax2.plot(self.x_time, self.y_process_values[1])
+        # self.ax2.xaxis_date()
+        
+        self.subplot.clear()
+        for controller, controller_process_values in zip(self.controllers, self.y_process_values):
+            self.subplot.plot(self.x_time, controller_process_values, label =controller.controller_name, linestyle="-")
+        
+        plt.legend()
         plt.xticks(rotation=45, ha='right')
         plt.rc('font', **{'size': 6})
-        plt.title(self.pid.process.name)
+        plt.title("Process") #self.pid.process.name
         plt.xlabel('Time')
-        plt.ylabel(self.pid.process.name + ' (%)')
+        plt.ylabel("Process" + ' (%)') #self.pid.process.name + ' (%)'
+        plt.ylim([0, 100])
 
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(padx=10, pady=10)
