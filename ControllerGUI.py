@@ -14,11 +14,6 @@ class ControllerGUI:
         #self.bang_bang = bang_bang
         self.controllers = controllers
 
-        self.x_time = []
-        self.y_process_values = []
-        for _ in range(len(controllers)):
-            self.y_process_values.append([])
-
         self.MEASUREMENT_PERIOD = 0.2  # Time between "measurements" (seconds)
         self.set_gui_layout()
 
@@ -96,27 +91,12 @@ class ControllerGUI:
         for controller_process_text, controller in zip(self.process_texts, self.controllers):
             controller_process_text['text'] = f"{controller.process.value:.1f}"
 
-        """ Get recent process value """
-        self.x_time.append(datetime.now())
-        self.x_time = self.x_time[-200:] # Limit to 200 items
-        for controller, controller_process_values in zip(self.controllers, self.y_process_values):
-            controller_process_values.append(controller.process.value)
-            controller_process_values = controller_process_values[-200:]
 
-
-        """ Plot data """
-        # Draw x and y lists
-
-        # self.ax1.clear()
-        # self.ax1.plot(self.x_time, self.y_process_values[0])
-        # self.ax1.xaxis_date()
-        # self.ax2.clear()
-        # self.ax2.plot(self.x_time, self.y_process_values[1])
-        # self.ax2.xaxis_date()
-        
+        """ Plot data """        
         self.subplot.clear()
-        for controller, controller_process_values in zip(self.controllers, self.y_process_values):
-            self.subplot.plot(self.x_time, controller_process_values, label =controller.controller_name, linestyle="-")
+        for controller in self.controllers:
+            self.subplot.plot(controller.process.time_log, controller.process.value_log, 
+                              label =controller.controller_name, linestyle="-")
         
         plt.legend()
         plt.xticks(rotation=45, ha='right')
