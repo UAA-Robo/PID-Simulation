@@ -1,22 +1,9 @@
+from Controller import Controller
 from ControllerValue import ControllerValue 
 
-class BangBang:
+class BangBang(Controller):
     def __init__(self, setpoint:float = 0.0, control_low:float=0.0, control_high:float=100.0):
-        
-        self._setpoint = ControllerValue(setpoint, "Setpoint", 0.1)
-        self._CONTROL_LOW = control_low
-        self._CONTROL_HIGH = control_high
-
-        self._process = ControllerValue(0, "Bang-Bang Process Value")
-        self._control = ControllerValue(0, "Bang-Bang Control Value")
-
-    
-    @property
-    def setpoint(self): return self._setpoint
-    @property
-    def process(self): return self._process
-    @property
-    def control(self): return self._control
+        super().__init__("Bang Bang", setpoint, control_low, control_high)
 
 
     def update_control_value(self, process_value: float, *args) -> float:
