@@ -15,17 +15,19 @@ class PID:
                 return
             self._value -= self._adjust_amount
         
-        # Getters
-        def value(self) -> float: return self._value
-        def name(self) -> float: return self._name
-        def adjust_amount(self) -> float: return self._adjust_amount
+        # Getters and Setters
+        @property
+        def value(self): return self._value
+        @value.setter
+        def value(self, value): self._value = float(value)
 
-        # Setters
-        def set_value(self, value:float) -> None: 
-            self._value = float(value)
-        def set_adjust_amount(self, adjust_amount:float) -> None: 
-            self._adjust_amount = float(adjust_amount)
+        @property
+        def name(self): return self._name
 
+        @property
+        def adjust_amount(self): return self._adjust_amount
+        @adjust_amount.setter
+        def adjust_amount(self, value): self._adjust_amount = float(value)
 
 
     def __init__(self, setpoint:float = 0.0, P: float = 0.0, I: float = 0,  D: float = 0.0):
@@ -40,37 +42,36 @@ class PID:
         self._integral = 0.0
         self._previous_error = 0.0
     
-    # Getters
-    def setpoint(self) -> PIDValue: return self._setpoint
-    def P(self) -> PIDValue: return self._P
-    def I(self) -> PIDValue: return self._I
-    def D(self) -> PIDValue: return self._D
-    def process(self) -> PIDValue: return self._process
-    def control(self) -> PIDValue: return self._control
+    @property
+    def setpoint(self): return self._setpoint
+    @property
+    def P(self): return self._P
+    @property
+    def I(self): return self._I
+    @property
+    def D(self): return self._D
+    @property
+    def process(self): return self._process
+    @property
+    def control(self): return self._control
 
-    def previous_error(self) -> PIDValue: return self._previous_error
 
-    
-    
-    # def get_P(self):
-    #     return self._P
-
-    # def update_values(self, setpoint:float = None, P: float = None, I: float = None,  
-    #                     D: float = None) -> None:
-    #     """ Sets PID constants.  
-    #     @param setpoint    Value that you want the PID to try to reach
-    #     @param P:   Proportional constant (how much change needed to reach setpoint)
-    #     @param I:   Integral constant (how much to deviate from current val)
-    #     @param D:   Derivative constant (how fast to reach setpoint)
-    #     """
-    #     if setpoint:
-    #         self.setpoint.value = setpoint
-    #     if P:
-    #         self._P.set_value(P)
-    #     if I:
-    #         self._I.set_value(I)
-    #     if D:
-    #         self._D.set_value(D)
+    def update_values(self, setpoint:float = None, P: float = None, I: float = None,  
+                        D: float = None) -> None:
+        """ Sets PID constants.  
+        @param setpoint    Value that you want the PID to try to reach
+        @param P:   Proportional constant (how much change needed to reach setpoint)
+        @param I:   Integral constant (how much to deviate from current val)
+        @param D:   Derivative constant (how fast to reach setpoint)
+        """
+        if setpoint:
+            self.setpoint.value = setpoint
+        if P:
+            self._P.set_value(P)
+        if I:
+            self._I.set_value(I)
+        if D:
+            self._D.set_value(D)
 
 
     def update_control_value(self, process_value: float, change_in_time: float) -> float:
@@ -82,15 +83,15 @@ class PID:
         """
 
         # Variables that don't have to be kept over time are not stored in the class
-        self._process.set_value(process_value)
+        self._process.value = process_value
 
-        error = self._process.value() - self._setpoint.value()
+        error = self._process.value - self._setpoint.value
         derivative = (error - self._previous_error) / change_in_time
         self._integral += error  * change_in_time
 
         self._previous_error = error
 
-        self._control.set_value(self._P.value() * error + self._I.value() * self._integral
-            + self._D.value() * derivative)
+        self._control.value = (self._P.value * error + self._I.value * self._integral
+            + self._D.value * derivative)
 
-        return self._control.value()
+        return self._control.value
