@@ -54,8 +54,6 @@ class ControllerGUI:
         # Plot
         self.fig = plt.figure(layout='tight')
         self.subplot = self.fig.add_subplot(1, 1, 1)
-        self.fig.set_figwidth(5)
-        #self.fig.set_figheight(3)
         self.canvas = FigureCanvasTkAgg(self.fig, master = right_frame) 
 
 
@@ -99,14 +97,14 @@ class ControllerGUI:
                 input.delete(0, tk.END) # Clear input after pressing enter
 
             input.bind('<Return>', func=input_value)  # Update value on return
-            input.pack(side=tk.RIGHT)
+            input.pack(side=tk.RIGHT, padx=10)
 
         if HAS_BUTTONS:
-            increment_button = tk.Button(parameter_frame, width=1,
+            increment_button = tk.Button(parameter_frame, 
                                          text = f"+ {controller_parameter.adjust_amount}", 
                                         command=lambda:(controller_parameter.increment_value(), 
                                                         update_value_text()))
-            decrement_button = tk.Button(parameter_frame, width=1,
+            decrement_button = tk.Button(parameter_frame,
                                          text = f"- {controller_parameter.adjust_amount}",
                                         command=lambda:(controller_parameter.decrement_value(), 
                                         update_value_text()))
