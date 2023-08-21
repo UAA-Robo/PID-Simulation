@@ -35,13 +35,13 @@ class ControllerGUI:
         self.gui.title("Controller Tuner")
         left_frame = tk.Frame()
         right_frame = tk.Frame()
-        left_frame.pack(side=tk.LEFT, fill=tk.BOTH,  padx=10,  pady=5,  expand=True)
-        right_frame.pack(side='right', fill='both',  padx=10,  pady=5,  expand=True)
+        left_frame.pack(side=tk.LEFT, fill=tk.Y,  padx=10,  pady=5)
+        right_frame.pack(side=tk.RIGHT, fill='both',  padx=10,  pady=5,  expand=True)
         tk.Label(left_frame, text ="Controller GUI").pack()
 
         self.process_texts = []
         for controller in self.controllers:
-            tk.Label(left_frame, text=controller.controller_name).pack()
+            tk.Label(left_frame, text=controller.controller_name,).pack(pady=(50,0))
             self.process_texts.append(
                 self.display_controller_parameter(left_frame, controller.process, 
                                                   HAS_INPUT=False, HAS_BUTTONS=False))
@@ -75,10 +75,12 @@ class ControllerGUI:
         parameter_frame = tk.Frame(frame)
         parameter_frame.pack(fill=tk.X)
 
-        name = tk.Label(parameter_frame, text = controller_parameter.name)
-        value = tk.Label(parameter_frame, text = controller_parameter.value, fg="black", bg="yellow")
-        name.pack(side=tk.LEFT, fill=tk.X)
-        value.pack(side=tk.LEFT, fill=tk.X)
+        name = tk.Label(parameter_frame, text = controller_parameter.name, 
+                        wraplength=200, anchor=tk.W)
+        value = tk.Label(parameter_frame, text = controller_parameter.value, 
+                         fg="black", bg="yellow", width=5)
+        name.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        value.pack(side=tk.RIGHT, padx=10)
 
         def update_value_text() -> None:
             """
@@ -87,19 +89,9 @@ class ControllerGUI:
             """
             value['text'] = f"{controller_parameter.value:.1f}"
         
-        if HAS_BUTTONS:
-            increment_button = tk.Button(parameter_frame, text = f"+ {controller_parameter.adjust_amount}", 
-                                        command=lambda:(controller_parameter.increment_value(), 
-                                                        update_value_text()))
-            decrement_button = tk.Button(parameter_frame, text = f"- {controller_parameter.adjust_amount}",
-                                        command=lambda:(controller_parameter.decrement_value(), 
-                                        update_value_text()))
-            
-            increment_button.pack(side=tk.LEFT)
-            decrement_button.pack(side=tk.LEFT)
 
         if HAS_INPUT:
-            input=tk.Entry(parameter_frame)
+            input=tk.Entry(parameter_frame, width=5)
 
             def input_value(event):
                 controller_parameter.value = input.get()
@@ -107,7 +99,20 @@ class ControllerGUI:
                 input.delete(0, tk.END) # Clear input after pressing enter
 
             input.bind('<Return>', func=input_value)  # Update value on return
-            input.pack()
+            input.pack(side=tk.RIGHT)
+
+        if HAS_BUTTONS:
+            increment_button = tk.Button(parameter_frame, width=1,
+                                         text = f"+ {controller_parameter.adjust_amount}", 
+                                        command=lambda:(controller_parameter.increment_value(), 
+                                                        update_value_text()))
+            decrement_button = tk.Button(parameter_frame, width=1,
+                                         text = f"- {controller_parameter.adjust_amount}",
+                                        command=lambda:(controller_parameter.decrement_value(), 
+                                        update_value_text()))
+            
+            increment_button.pack(side=tk.RIGHT)
+            decrement_button.pack(side=tk.RIGHT)
         
         return value
         
