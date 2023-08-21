@@ -1,9 +1,6 @@
 import tkinter as tk
-from Controllers.PID import PID
-from Controllers.BangBang import BangBang
 import matplotlib.pyplot as plt
-from datetime import datetime
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from Controllers.ControllerParameter import ControllerParameter
 
 class ControllerGUI:
@@ -11,7 +8,7 @@ class ControllerGUI:
     @brief    GUI for graphically viewing changes in process values affected by controller(s) 
               overtime. Allows changing the setpoint and tuning values for the controller. 
     """
-    def __init__(self, controllers:list ):
+    def __init__(self, controllers:list):
         """
         @param controllers    List of controllers with parent class Controller to display in 
                               the gui.
@@ -34,48 +31,54 @@ class ControllerGUI:
 
         # GUI
         self.gui = tk.Tk()
-        self.gui.geometry("1600x800")
+        self.gui.geometry("1200x600")
         self.gui.title("Controller Tuner")
-        tk.Label(self.gui, text ="Controller GUI").pack()
+        left_frame = tk.Frame()
+        right_frame = tk.Frame()
+        left_frame.pack(side=tk.LEFT, fill=tk.BOTH,  padx=10,  pady=5,  expand=True)
+        right_frame.pack(side='right', fill='both',  padx=10,  pady=5,  expand=True)
+        tk.Label(left_frame, text ="Controller GUI").pack()
 
         self.process_texts = []
         for controller in self.controllers:
-            tk.Label(self.gui, text=controller.controller_name).pack()
+            tk.Label(left_frame, text=controller.controller_name).pack()
             self.process_texts.append(
-                self.display_controller_parameter(controller.process, 
+                self.display_controller_parameter(left_frame, controller.process, 
                                                   HAS_INPUT=False, HAS_BUTTONS=False))
 
-            self.display_controller_parameter(controller.setpoint, HAS_BUTTONS=False)
+            self.display_controller_parameter(left_frame, controller.setpoint, HAS_BUTTONS=False)
 
             for tuning_parameters in controller.tuning_parameters:
-                self.display_controller_parameter(tuning_parameters)
+                self.display_controller_parameter(left_frame, tuning_parameters)
 
         # Plot
         self.fig = plt.figure(layout='tight')
         self.subplot = self.fig.add_subplot(1, 1, 1)
-        self.fig.set_figwidth(15)
-        self.canvas = FigureCanvasTkAgg(self.fig, master = self.gui) 
+        self.fig.set_figwidth(5)
+        #self.fig.set_figheight(3)
+        self.canvas = FigureCanvasTkAgg(self.fig, master = right_frame) 
 
 
 
-    def display_controller_parameter(self, controller_parameter:ControllerParameter, 
+    def display_controller_parameter(self, frame:tk.Frame, controller_parameter:ControllerParameter, 
                                      HAS_INPUT: bool = True, HAS_BUTTONS: bool = True) -> None:
         """
         @brief   Formats a "widget" to display the controller parameter value. Updates parameter
                  values based on button/text input.
+        @param frame    Frame to set widget in.
         @param controller_parameter    Either a process, setpoint, or tuning parameter.
         @param HAS_INPUT    Text input for changing the parameter value is added to the GUI 
                             when True.
         @param HAS_BUTTONS    + and - buttons for changing the parameter value are added to the 
                               GUI when True.
         """
-        frame = tk.Frame(self.gui)
-        frame.pack()
+        parameter_frame = tk.Frame(frame)
+        parameter_frame.pack(fill=tk.X)
 
-        name = tk.Label(frame, text = controller_parameter.name)
-        value = tk.Label(frame, text = controller_parameter.value, fg="black", bg="yellow")
-        name.pack(side=tk.LEFT)
-        value.pack(side=tk.LEFT)
+        name = tk.Label(parameter_frame, text = controller_parameter.name)
+        value = tk.Label(parameter_frame, text = controller_parameter.value, fg="black", bg="yellow")
+        name.pack(side=tk.LEFT, fill=tk.X)
+        value.pack(side=tk.LEFT, fill=tk.X)
 
         def update_value_text() -> None:
             """
@@ -85,10 +88,10 @@ class ControllerGUI:
             value['text'] = f"{controller_parameter.value:.1f}"
         
         if HAS_BUTTONS:
-            increment_button = tk.Button(frame, text = f"+ {controller_parameter.adjust_amount}", 
+            increment_button = tk.Button(parameter_frame, text = f"+ {controller_parameter.adjust_amount}", 
                                         command=lambda:(controller_parameter.increment_value(), 
                                                         update_value_text()))
-            decrement_button = tk.Button(frame, text = f"- {controller_parameter.adjust_amount}",
+            decrement_button = tk.Button(parameter_frame, text = f"- {controller_parameter.adjust_amount}",
                                         command=lambda:(controller_parameter.decrement_value(), 
                                         update_value_text()))
             
@@ -96,7 +99,7 @@ class ControllerGUI:
             decrement_button.pack(side=tk.LEFT)
 
         if HAS_INPUT:
-            input=tk.Entry(frame)
+            input=tk.Entry(parameter_frame)
 
             def input_value(event):
                 controller_parameter.value = input.get()
