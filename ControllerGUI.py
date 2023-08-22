@@ -85,9 +85,12 @@ class ControllerGUI:
         column = self.Counter()
 
         name = tk.Label(frame, text = controller_parameter.name, wraplength=200)
-        value = tk.Label(frame, text = controller_parameter.value, fg="black", bg="yellow", width=5)
         name.grid(row=row.count, column=column.count, sticky=tk.E, padx=(0, 10))
-        value.grid(row=row.count, column=column.count, padx=10)
+
+        column_span = 1 if HAS_INPUT or HAS_BUTTONS else 5
+
+        value = tk.Label(frame, text = controller_parameter.value, fg="black", bg="yellow", width=5)
+        value.grid(row=row.count, column=column.count, padx=10, columnspan=column_span, sticky=tk.EW)
 
 
         def update_value_text() -> None:
@@ -99,7 +102,9 @@ class ControllerGUI:
     
         
         if HAS_INPUT:
-            input=tk.Entry(frame, width=5,)
+            width = 5 if HAS_BUTTONS else 13
+            if HAS_BUTTONS: width = 5   
+            input=tk.Entry(frame, width=width)
 
             def input_value(event):
                 controller_parameter.value = input.get()
