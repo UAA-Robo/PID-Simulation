@@ -24,8 +24,8 @@ class ControllerGUI:
         """
         @brief   Should be called to display the GUI popup.
         """
-        self.gui.after(int(self.PLOTTING_PERIOD * 1000), self.update_values_continuously)
-        self.gui.mainloop()
+        self.app.after(int(self.PLOTTING_PERIOD * 1000), self.update_values_continuously)
+        self.app.mainloop()
 
     def set_gui_layout(self) -> None:
         """
@@ -33,37 +33,37 @@ class ControllerGUI:
         """
 
         # GUI
-        self.gui = ctk.CTk()  # "1200x600"
+        self.app = ctk.CTk()  # "1200x600"
         
-        self.gui.title("Controller Tuner")
-        left_frame = tk.Frame(self.gui, width=200)
+        self.app.title("Controller Tuner")
+        left_frame = tk.Frame(self.app, width=200)
         left_frame.grid(row=0, column=0, padx=10, pady=5, sticky=tk.NSEW)
 
-        right_frame = tk.Frame(self.gui, width=300, height=300)
+        right_frame = tk.Frame(self.app, width=300, height=300)
         right_frame.grid(row=0, column=1, padx=10, pady=5)
 
         left_frame_row = self.Counter()
         NUM_COLUMNS = 5
         tk.Label(left_frame, text ="Controller Visualization")\
-            .grid(row=left_frame_row.count, column=0, columnspan=NUM_COLUMNS)
+            .grid(row=left_frame_row.count(), column=0, columnspan=NUM_COLUMNS)
 
-        self.process_texts = []
         for controller in self.controllers:
             tk.Label(left_frame, text=controller.controller_name)\
-                .grid(row=left_frame_row.count, column=0, columnspan=NUM_COLUMNS, pady=(50, 10))
+                .grid(row=left_frame_row.count(), column=0, columnspan=NUM_COLUMNS, pady=(50, 10))
             
             
-            process_display = ParameterDisplay(left_frame, controller.process)
-            process_display.grid(row=left_frame_row.count, column=0)
-            
-            self.process_texts.append(
-                self.display_controller_parameter(left_frame, left_frame_row.count, 0, controller.process, 
-                                                  HAS_INPUT=False, HAS_BUTTONS=False))
+            ParameterDisplay(self.app, left_frame, controller.process)\
+                .grid(row=left_frame_row.count(False), column=0)
 
-            self.display_controller_parameter(left_frame, left_frame_row.count, 0, controller.setpoint, HAS_BUTTONS=False)
+            ParameterSpinbox(left_frame, controller.setpoint)\
+                .grid(row=left_frame_row.count(), column=1)
 
-            for tuning_parameters in controller.tuning_parameters:
-                self.display_controller_parameter(left_frame, left_frame_row.count, 0, tuning_parameters)
+            tuner_column = self.Counter()
+            for tuning_parameter in controller.tuning_parameters:
+                ParameterSpinbox(left_frame, tuning_parameter)\
+                .grid(row=left_frame_row.count(False), column=tuner_column.count())
+
+            left_frame_row.count()
  
 
         # Plot
@@ -72,89 +72,11 @@ class ControllerGUI:
         self.canvas = FigureCanvasTkAgg(self.fig, master = right_frame) 
 
 
-
-    def display_controller_parameter(self, frame:tk.Frame, row:int, column:int, 
-                                    controller_parameter:ControllerParameter, 
-                                    HAS_INPUT: bool = True, HAS_BUTTONS: bool = True) -> None:
-        """
-        @brief   Formats a "widget" to display the controller parameter value. Updates parameter
-                 values based on button/text input.
-        @param frame    Frame to set widget in.
-        @param row     Row in frame grid to place widget.
-        @param column     Column in frame grid to place widget.
-        @param controller_parameter    Either a process, setpoint, or tuning parameter.
-        @param HAS_INPUT    Text input for changing the parameter value is added to the GUI 
-                            when True.
-        @param HAS_BUTTONS    + and - buttons for changing the parameter value are added to the 
-                              GUI when True.
-        """
-        
-        row = self.Counter(initial_count=row, is_incrementing=False)
-        column = self.Counter()
-
-        name = tk.Label(frame, text = controller_parameter.name, wraplength=200)
-        name.grid(row=row.count, column=column.count, sticky=tk.E, padx=(0, 10))
-
-        column_span = 1 if HAS_INPUT or HAS_BUTTONS else 5
-
-        value = tk.Label(frame, text = controller_parameter.value, fg="black", bg="yellow", width=5)
-        value.grid(row=row.count, column=column.count, padx=10, columnspan=column_span, sticky=tk.EW)
-
-
-        def update_value_text() -> None:
-            """
-            @brief   Sets the parameters text value based on the latest value in the Controller 
-                     Class.
-            """
-            value['text'] = f"{controller_parameter.value:.1f}"
-        
-        ParameterSpinbox(frame, controller_parameter).grid(row=row.count, column=column.count, padx=3, pady=3)
-    
-        
-        # if HAS_INPUT:
-        #     width = 5 if HAS_BUTTONS else 13
-        #     if HAS_BUTTONS: width = 5   
-        #     input=tk.Entry(frame, width=width)
-
-        #     def input_value(event):
-        #         controller_parameter.value = input.get()
-        #         update_value_text()
-        #         input.delete(0, tk.END) # Clear input after pressing enter
-
-        #     input.bind('<Return>', func=input_value)  # Update value on return
-
-        #     # Otherwise placed between buttons
-        #     if not HAS_BUTTONS:
-        #         input.grid(row=row.count, column=column.count, columnspan=3)
-       
-    
-        # if HAS_BUTTONS:
-        #     increment_button = ctk.CTkButton(frame, width=5, height=2,
-        #                                  text="+",  # f"+ {controller_parameter.adjust_amount}"
-        #                                 command=lambda:(controller_parameter.increment_value(), 
-        #                                                 update_value_text()))
-        #     decrement_button = ctk.CTkButton(frame, width=5, height=2,
-        #                                 text="-", # f"- {controller_parameter.adjust_amount}",
-        #                                 command=lambda:(controller_parameter.decrement_value(), 
-        #                                 update_value_text()))
-            
-        #     increment_button.grid(row=row.count, column=column.count)
-        #     if HAS_INPUT:
-        #         input.grid(row=row.count, column=column.count)
-        #     decrement_button.grid(row=row.count, column=column.count)
-
-        return value
-
     def update_values_continuously(self):
         """
         @brief    Updates plot and process value display every PLOTTING_PERIOD to be up to date
                   with the data in the controller classes.
         """
-        
-        """ Update gui text """
-        for controller_process_text, controller in zip(self.process_texts, self.controllers):
-            controller_process_text['text'] = f"{controller.process.value:.1f}"
-
 
         """ Plot data """        
         self.subplot.clear()
@@ -174,7 +96,7 @@ class ControllerGUI:
         self.canvas.get_tk_widget().grid(row=0, column=0, padx=10, pady=10, sticky=tk.NSEW)
 
         # ask the mainloop to call this method again in the measurement period
-        self.gui.after(int(self.PLOTTING_PERIOD * 1000), self.update_values_continuously)
+        self.app.after(int(self.PLOTTING_PERIOD * 1000), self.update_values_continuously)
 
 
     class  Counter:
@@ -185,16 +107,17 @@ class ControllerGUI:
         def __init__(self, is_incrementing: bool = True, initial_count: int = 0):
             self._count = initial_count
             self._IS_INCREMENTING = is_incrementing
+        
+        def count(self, is_incrementing: bool = None):
+            if is_incrementing == None:
+                is_incrementing = self._IS_INCREMENTING
 
-        @property
-        def count(self):
             # Emulates incrementing count "after" returning
-            if self._IS_INCREMENTING:
+            if is_incrementing:
                 self._count += 1
                 return self._count - 1
             
             return self._count
-
 
 
 
