@@ -34,8 +34,10 @@ class ControllerGUI:
 
         # GUI
         self.app = ctk.CTk()  # "1200x600"
-        
+        ctk.set_appearance_mode("dark")
+
         self.app.title("Controller Tuner")
+        
         left_frame = tk.Frame(self.app, width=200)
         left_frame.grid(row=0, column=0, padx=10, pady=5, sticky=tk.NSEW)
 
@@ -43,25 +45,25 @@ class ControllerGUI:
         right_frame.grid(row=0, column=1, padx=10, pady=5)
 
         left_frame_row = self.Counter()
-        NUM_COLUMNS = 5
-        tk.Label(left_frame, text ="Controller Visualization")\
-            .grid(row=left_frame_row.count(), column=0, columnspan=NUM_COLUMNS)
+        NUM_COLUMNS = 2
+        ctk.CTkLabel(left_frame, text ="Feedback Controller Visualization", corner_radius=5, 
+                     font=(None, 20))\
+            .grid(row=left_frame_row.count(), column=0, columnspan=NUM_COLUMNS, pady=(40, 0))
 
         for controller in self.controllers:
-            tk.Label(left_frame, text=controller.controller_name)\
-                .grid(row=left_frame_row.count(), column=0, columnspan=NUM_COLUMNS, pady=(50, 10))
+            ctk.CTkLabel(left_frame, text=controller.controller_name)\
+                .grid(row=left_frame_row.count(), column=0, columnspan=NUM_COLUMNS, pady=(40, 0))
             
             
             ParameterDisplay(self.app, left_frame, controller.process)\
                 .grid(row=left_frame_row.count(False), column=0)
 
             ParameterSpinbox(left_frame, controller.setpoint)\
-                .grid(row=left_frame_row.count(), column=1)
+                .grid(row=left_frame_row.count(), column=1, padx=(0, 10))
 
-            tuner_column = self.Counter()
             for tuning_parameter in controller.tuning_parameters:
                 ParameterSpinbox(left_frame, tuning_parameter)\
-                .grid(row=left_frame_row.count(False), column=tuner_column.count())
+                .grid(row=left_frame_row.count(), column= 0, columnspan=NUM_COLUMNS)
 
             left_frame_row.count()
  
