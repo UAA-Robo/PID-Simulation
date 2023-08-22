@@ -30,55 +30,65 @@ class ControllerGUI:
         """
 
         # GUI
-        self.gui = tk.Tk()
-        self.gui.geometry("1200x600")
+        self.gui = tk.Tk("1200x600")
+        
         self.gui.title("Controller Tuner")
-        left_frame = tk.Frame()
-        right_frame = tk.Frame()
-        left_frame.pack(side=tk.LEFT, fill=tk.Y,  padx=10,  pady=5)
-        right_frame.pack(side=tk.RIGHT, fill='both',  padx=10,  pady=5,  expand=True)
-        tk.Label(left_frame, text ="Controller GUI").pack()
+        left_frame = tk.Frame(self.gui, width=200)
+        left_frame.grid(row=0, column=0, padx=10, pady=5, sticky=tk.NSEW)
+
+        right_frame = tk.Frame(self.gui, width=300, height=300)
+        right_frame.grid(row=0, column=1, padx=10, pady=5)
+
+        left_frame_row = self.Counter()
+        NUM_COLUMNS = 5
+        tk.Label(left_frame, text ="Controller Visualization")\
+            .grid(row=left_frame_row.count, column=0, columnspan=NUM_COLUMNS)
 
         self.process_texts = []
         for controller in self.controllers:
-            tk.Label(left_frame, text=controller.controller_name,).pack(pady=(50,0))
+            tk.Label(left_frame, text=controller.controller_name)\
+                .grid(row=left_frame_row.count, column=0, columnspan=NUM_COLUMNS, pady=(50, 10))
             self.process_texts.append(
-                self.display_controller_parameter(left_frame, controller.process, 
+                self.display_controller_parameter(left_frame, left_frame_row.count, 0, controller.process, 
                                                   HAS_INPUT=False, HAS_BUTTONS=False))
 
-            self.display_controller_parameter(left_frame, controller.setpoint, HAS_BUTTONS=False)
+            self.display_controller_parameter(left_frame, left_frame_row.count, 0, controller.setpoint, HAS_BUTTONS=False)
 
             for tuning_parameters in controller.tuning_parameters:
-                self.display_controller_parameter(left_frame, tuning_parameters)
+                self.display_controller_parameter(left_frame, left_frame_row.count, 0, tuning_parameters)
+ 
 
         # Plot
-        self.fig = plt.figure(layout='tight')
+        self.fig = plt.figure(layout='tight', figsize=(4, 2.5)) 
         self.subplot = self.fig.add_subplot(1, 1, 1)
         self.canvas = FigureCanvasTkAgg(self.fig, master = right_frame) 
 
 
 
-    def display_controller_parameter(self, frame:tk.Frame, controller_parameter:ControllerParameter, 
-                                     HAS_INPUT: bool = True, HAS_BUTTONS: bool = True) -> None:
+    def display_controller_parameter(self, frame:tk.Frame, row:int, column:int, 
+                                    controller_parameter:ControllerParameter, 
+                                    HAS_INPUT: bool = True, HAS_BUTTONS: bool = True) -> None:
         """
         @brief   Formats a "widget" to display the controller parameter value. Updates parameter
                  values based on button/text input.
         @param frame    Frame to set widget in.
+        @param row     Row in frame grid to place widget.
+        @param column     Column in frame grid to place widget.
         @param controller_parameter    Either a process, setpoint, or tuning parameter.
         @param HAS_INPUT    Text input for changing the parameter value is added to the GUI 
                             when True.
         @param HAS_BUTTONS    + and - buttons for changing the parameter value are added to the 
                               GUI when True.
         """
-        parameter_frame = tk.Frame(frame)
-        parameter_frame.pack(fill=tk.X)
+        
+        row = self.Counter(initial_count=row, is_incrementing=False)
+        column = self.Counter()
 
-        name = tk.Label(parameter_frame, text = controller_parameter.name, 
-                        wraplength=200, anchor=tk.W)
-        value = tk.Label(parameter_frame, text = controller_parameter.value, 
-                         fg="black", bg="yellow", width=5)
-        name.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        value.pack(side=tk.RIGHT, padx=10)
+        name = tk.Label(frame, text = controller_parameter.name, wraplength=200)
+        value = tk.Label(frame, text = controller_parameter.value, fg="black", bg="yellow", width=5)
+        name.grid(row=row.count, column=column.count, sticky=tk.E, padx=(0, 10))
+        value.grid(row=row.count, column=column.count, padx=10)
+
 
         def update_value_text() -> None:
             """
@@ -86,10 +96,10 @@ class ControllerGUI:
                      Class.
             """
             value['text'] = f"{controller_parameter.value:.1f}"
+    
         
-
         if HAS_INPUT:
-            input=tk.Entry(parameter_frame, width=5)
+            input=tk.Entry(frame, width=5,)
 
             def input_value(event):
                 controller_parameter.value = input.get()
@@ -97,23 +107,28 @@ class ControllerGUI:
                 input.delete(0, tk.END) # Clear input after pressing enter
 
             input.bind('<Return>', func=input_value)  # Update value on return
-            input.pack(side=tk.RIGHT, padx=10)
 
+            # Otherwise placed between buttons
+            if not HAS_BUTTONS:
+                input.grid(row=row.count, column=column.count, columnspan=3)
+       
+    
         if HAS_BUTTONS:
-            increment_button = tk.Button(parameter_frame, 
-                                         text = f"+ {controller_parameter.adjust_amount}", 
+            increment_button = tk.Button(frame, 
+                                         text="+",  # f"+ {controller_parameter.adjust_amount}"
                                         command=lambda:(controller_parameter.increment_value(), 
                                                         update_value_text()))
-            decrement_button = tk.Button(parameter_frame,
-                                         text = f"- {controller_parameter.adjust_amount}",
+            decrement_button = tk.Button(frame,
+                                         text="-", # f"- {controller_parameter.adjust_amount}",
                                         command=lambda:(controller_parameter.decrement_value(), 
                                         update_value_text()))
             
-            increment_button.pack(side=tk.RIGHT)
-            decrement_button.pack(side=tk.RIGHT)
-        
+            increment_button.grid(row=row.count, column=column.count)
+            if HAS_INPUT:
+                input.grid(row=row.count, column=column.count)
+            decrement_button.grid(row=row.count, column=column.count)
+
         return value
-        
 
     def update_values_continuously(self):
         """
@@ -141,11 +156,29 @@ class ControllerGUI:
         plt.ylim([0, 100])
 
         self.canvas.draw()
-        self.canvas.get_tk_widget().pack(padx=10, pady=10)
+        self.canvas.get_tk_widget().grid(row=0, column=0, padx=10, pady=10, sticky=tk.NSEW)
 
         # ask the mainloop to call this method again in the measurement period
         self.gui.after(int(self.PLOTTING_PERIOD * 1000), self.update_values_continuously)
 
+
+    class  Counter:
+        """
+        @brief Keeps tracks of a counter and automatically increments them when they are 
+               used. Used for tkinter grid rows/columns
+        """
+        def __init__(self, is_incrementing: bool = True, initial_count: int = 0):
+            self._count = initial_count
+            self._IS_INCREMENTING = is_incrementing
+
+        @property
+        def count(self):
+            # Emulates incrementing count "after" returning
+            if self._IS_INCREMENTING:
+                self._count += 1
+                return self._count - 1
+            
+            return self._count
 
 
 

@@ -7,12 +7,12 @@ class Controller:
     """
     def __init__(self, controller_name:str, setpoint:float, control_low:float, control_high:float):
         self._CONTROLLER_NAME = controller_name
-        self._setpoint = ControllerParameter(setpoint, controller_name + " Setpoint", 0.1)
+        self._setpoint = ControllerParameter(setpoint, "Setpoint", 0.1)
         self._CONTROL_LOW = control_low
         self._CONTROL_HIGH = control_high
 
-        self._process = ControllerParameter(0, controller_name + " Process Value")
-        self._control = ControllerParameter(0, controller_name + " Control Value")
+        self._process = ControllerParameter(0, "Process Value")
+        self._control = ControllerParameter(0, "Control Value")
         self._tuning_parameters = []
 
     @property

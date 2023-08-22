@@ -9,9 +9,9 @@ class PID(Controller):
                  P: float = 0.0, I: float = 0,  D: float = 0.0):
         super().__init__("PID", setpoint, control_low, control_high)
 
-        self._P = ControllerParameter(P, "P", 0.1)
-        self._I = ControllerParameter(I, "I", 0.1)
-        self._D = ControllerParameter(D, "D", 0.1)
+        self._P = ControllerParameter(P, "Proportion", 0.1)
+        self._I = ControllerParameter(I, "Integral", 0.1)
+        self._D = ControllerParameter(D, "Derivate", 0.1)
         self._tuning_parameters = [self._P, self._I, self._D]
 
         # Variables that affect the PID over time
