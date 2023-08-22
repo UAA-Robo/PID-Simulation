@@ -3,7 +3,7 @@ from time import sleep
 from Controllers.BangBang import BangBang
 from Controllers.PID import PID
 import random
-from ControllerGUI import ControllerGUI
+from GUI.ControllerGUI import ControllerGUI
 
 
 def update_tank_level(controller:PID|BangBang) -> None:

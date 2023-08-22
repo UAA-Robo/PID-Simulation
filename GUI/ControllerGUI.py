@@ -1,7 +1,10 @@
 import tkinter as tk
+import customtkinter as ctk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from Controllers.ControllerParameter import ControllerParameter
+from GUI.ParameterSpinbox import ParameterSpinbox
+from GUI.ParameterDisplay import ParameterDisplay
 
 class ControllerGUI:
     """
@@ -30,7 +33,7 @@ class ControllerGUI:
         """
 
         # GUI
-        self.gui = tk.Tk("1200x600")
+        self.gui = ctk.CTk()  # "1200x600"
         
         self.gui.title("Controller Tuner")
         left_frame = tk.Frame(self.gui, width=200)
@@ -48,6 +51,11 @@ class ControllerGUI:
         for controller in self.controllers:
             tk.Label(left_frame, text=controller.controller_name)\
                 .grid(row=left_frame_row.count, column=0, columnspan=NUM_COLUMNS, pady=(50, 10))
+            
+            
+            process_display = ParameterDisplay(left_frame, controller.process)
+            process_display.grid(row=left_frame_row.count, column=0)
+            
             self.process_texts.append(
                 self.display_controller_parameter(left_frame, left_frame_row.count, 0, controller.process, 
                                                   HAS_INPUT=False, HAS_BUTTONS=False))
@@ -99,39 +107,41 @@ class ControllerGUI:
                      Class.
             """
             value['text'] = f"{controller_parameter.value:.1f}"
+        
+        ParameterSpinbox(frame, controller_parameter).grid(row=row.count, column=column.count, padx=3, pady=3)
     
         
-        if HAS_INPUT:
-            width = 5 if HAS_BUTTONS else 13
-            if HAS_BUTTONS: width = 5   
-            input=tk.Entry(frame, width=width)
+        # if HAS_INPUT:
+        #     width = 5 if HAS_BUTTONS else 13
+        #     if HAS_BUTTONS: width = 5   
+        #     input=tk.Entry(frame, width=width)
 
-            def input_value(event):
-                controller_parameter.value = input.get()
-                update_value_text()
-                input.delete(0, tk.END) # Clear input after pressing enter
+        #     def input_value(event):
+        #         controller_parameter.value = input.get()
+        #         update_value_text()
+        #         input.delete(0, tk.END) # Clear input after pressing enter
 
-            input.bind('<Return>', func=input_value)  # Update value on return
+        #     input.bind('<Return>', func=input_value)  # Update value on return
 
-            # Otherwise placed between buttons
-            if not HAS_BUTTONS:
-                input.grid(row=row.count, column=column.count, columnspan=3)
+        #     # Otherwise placed between buttons
+        #     if not HAS_BUTTONS:
+        #         input.grid(row=row.count, column=column.count, columnspan=3)
        
     
-        if HAS_BUTTONS:
-            increment_button = tk.Button(frame, 
-                                         text="+",  # f"+ {controller_parameter.adjust_amount}"
-                                        command=lambda:(controller_parameter.increment_value(), 
-                                                        update_value_text()))
-            decrement_button = tk.Button(frame,
-                                         text="-", # f"- {controller_parameter.adjust_amount}",
-                                        command=lambda:(controller_parameter.decrement_value(), 
-                                        update_value_text()))
+        # if HAS_BUTTONS:
+        #     increment_button = ctk.CTkButton(frame, width=5, height=2,
+        #                                  text="+",  # f"+ {controller_parameter.adjust_amount}"
+        #                                 command=lambda:(controller_parameter.increment_value(), 
+        #                                                 update_value_text()))
+        #     decrement_button = ctk.CTkButton(frame, width=5, height=2,
+        #                                 text="-", # f"- {controller_parameter.adjust_amount}",
+        #                                 command=lambda:(controller_parameter.decrement_value(), 
+        #                                 update_value_text()))
             
-            increment_button.grid(row=row.count, column=column.count)
-            if HAS_INPUT:
-                input.grid(row=row.count, column=column.count)
-            decrement_button.grid(row=row.count, column=column.count)
+        #     increment_button.grid(row=row.count, column=column.count)
+        #     if HAS_INPUT:
+        #         input.grid(row=row.count, column=column.count)
+        #     decrement_button.grid(row=row.count, column=column.count)
 
         return value
 
