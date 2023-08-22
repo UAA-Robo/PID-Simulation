@@ -69,8 +69,24 @@ class ControllerGUI:
  
 
         # Plot
+        plot_color = "#323232"
         self.fig = plt.figure(layout='tight', figsize=(4, 2.5)) 
+        self.fig.set_facecolor(plot_color)
         self.subplot = self.fig.add_subplot(1, 1, 1)
+        self.subplot.set_facecolor(plot_color)
+        
+        line_color = "white"
+        for side in ["bottom", "top", "right", "left"]: 
+            self.subplot.spines[side].set_color(line_color)
+        for axis in ["x", "y"]:     
+            self.subplot.tick_params(axis=axis, colors=line_color)
+        plt.rc('font', **{'size': 6})
+        plt.rcParams.update({'text.color': "white",'axes.labelcolor': "white"})
+        
+        
+        
+        #figure.title.set_color(line_color)
+        
         self.canvas = FigureCanvasTkAgg(self.fig, master = right_frame) 
 
 
@@ -86,9 +102,12 @@ class ControllerGUI:
             self.subplot.plot(controller.process.time_log, controller.process.value_log, 
                               label =controller.controller_name, linestyle="-")
         
-        plt.legend()
-        plt.xticks(rotation=45, ha='right')
-        plt.rc('font', **{'size': 6})
+
+        plt.xticks(rotation=45, ha="right")
+        plt.legend(facecolor="#323232", frameon=False)
+
+        
+       
         plt.title("Process")
         plt.xlabel('Time')
         plt.ylabel("Process Value")
