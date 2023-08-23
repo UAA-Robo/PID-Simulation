@@ -1,10 +1,9 @@
 import tkinter as tk
 import customtkinter as ctk
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from Controllers.ControllerParameter import ControllerParameter
+
 from GUI.ParameterSpinbox import ParameterSpinbox
 from GUI.ParameterDisplay import ParameterDisplay
+from GUI.Plot import Plot
 
 class ControllerGUI:
     """
@@ -24,7 +23,7 @@ class ControllerGUI:
         """
         @brief   Should be called to display the GUI popup.
         """
-        self.app.after(int(self.PLOTTING_PERIOD * 1000), self.update_values_continuously)
+        #self.app.after(int(self.PLOTTING_PERIOD * 1000), self.update_values_continuously)
         self.app.mainloop()
 
     def set_gui_layout(self) -> None:
@@ -66,59 +65,8 @@ class ControllerGUI:
                 .grid(row=left_frame_row.count(), column= 0, columnspan=NUM_COLUMNS)
 
             left_frame_row.count()
- 
 
-        # Plot
-        plot_color = "#323232"
-        self.fig = plt.figure(layout='tight', figsize=(4, 2.5)) 
-        self.fig.set_facecolor(plot_color)
-        self.subplot = self.fig.add_subplot(1, 1, 1)
-        self.subplot.set_facecolor(plot_color)
-        
-        line_color = "white"
-        for side in ["bottom", "top", "right", "left"]: 
-            self.subplot.spines[side].set_color(line_color)
-        for axis in ["x", "y"]:     
-            self.subplot.tick_params(axis=axis, colors=line_color)
-        plt.rc('font', **{'size': 6})
-        plt.rcParams.update({'text.color': "white",'axes.labelcolor': "white"})
-        
-        
-        
-        #figure.title.set_color(line_color)
-        
-        self.canvas = FigureCanvasTkAgg(self.fig, master = right_frame) 
-
-
-    def update_values_continuously(self):
-        """
-        @brief    Updates plot and process value display every PLOTTING_PERIOD to be up to date
-                  with the data in the controller classes.
-        """
-
-        """ Plot data """        
-        self.subplot.clear()
-        for controller in self.controllers:
-            self.subplot.plot(controller.process.time_log, controller.process.value_log, 
-                              label =controller.controller_name, linestyle="-")
-        
-
-        plt.xticks(rotation=45, ha="right")
-        plt.legend(facecolor="#323232", frameon=False)
-
-        
-       
-        plt.title("Process")
-        plt.xlabel('Time')
-        plt.ylabel("Process Value")
-        plt.ylim([0, 100])
-
-        self.canvas.draw()
-        self.canvas.get_tk_widget().grid(row=0, column=0, padx=10, pady=10, sticky=tk.NSEW)
-
-        # ask the mainloop to call this method again in the measurement period
-        self.app.after(int(self.PLOTTING_PERIOD * 1000), self.update_values_continuously)
-
+        Plot(self.app, right_frame, self.controllers)
 
     class  Counter:
         """
