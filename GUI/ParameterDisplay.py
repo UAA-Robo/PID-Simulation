@@ -28,7 +28,7 @@ class ParameterDisplay(ctk.CTkFrame):
                                   fg_color="yellow", corner_radius=5, width=50)
         self.value.grid(row=0, column=1, padx=5, pady=3)
 
-        self.app.after(int(self.UPDATE_PERIOD * 1000), self.update_value_callback) # Start continuos callback
+        self.update_value_callback() # Start continuos callback
     
     # Function override for default padx and pady vals
     def grid(self, padx: int = 10, pady: int = 3, **kwargs):

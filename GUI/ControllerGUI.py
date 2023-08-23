@@ -43,8 +43,8 @@ class ControllerGUI:
         left_frame.grid(row=0, column=0, padx=10, pady=5, sticky=tk.NSEW)
 
         right_frame = tk.Frame(self.app)  # 
-        right_frame.grid(row=0, column=1, padx=10, pady=5)
-        right_frame.grid_columnconfigure((0), weight=1)
+        right_frame.grid(row=0, column=1, padx=10, pady=5, sticky=tk.NSEW)
+        right_frame.grid_columnconfigure((0), weight=1, )
         right_frame.grid_rowconfigure((0), weight=1)
 
         left_frame_row = self.Counter()

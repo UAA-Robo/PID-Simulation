@@ -1,3 +1,4 @@
+import tkinter as tk 
 import customtkinter as ctk 
 from Controllers.ControllerParameter import ControllerParameter
 
@@ -18,14 +19,14 @@ class ParameterSpinbox(ctk.CTkFrame):
         self.grid_columnconfigure((0), weight=1)  
 
         self.label = ctk.CTkLabel(self,text = controller_parameter.name)
-        self.label.grid(row=0, column=0, padx=5, pady=3, sticky="ew")
+        self.label.grid(row=0, column=0, padx=5, pady=3, sticky=tk.EW)
 
         self.subtract_button = ctk.CTkButton(self, text="-", width=height-6, height=height-6,
                                                        command=self.subtract_button_callback)
         self.subtract_button.grid(row=0, column=1, padx=(3, 0), pady=3)
 
         self.entry = ctk.CTkEntry(self, width=width-(1.5 *height), height=height-6, border_width=0)
-        self.entry.grid(row=0, column=2, padx=3, pady=3,)  # sticky="ew,",
+        self.entry.grid(row=0, column=2, padx=3, pady=3,) 
         self.entry.bind('<Return>', command=self.update_entry_callback)  # Update value on return
         self.entry.insert(0, self.controller_parameter.value) # default value
 
@@ -56,5 +57,5 @@ class ParameterSpinbox(ctk.CTkFrame):
             return
     
     # Function overide for default padx and pady vals
-    def grid(self, padx: int = 10, pady: int = 3, sticky:str = "ew",**kwargs):
+    def grid(self, padx: int = 10, pady: int = 3, sticky:str = tk.EW,**kwargs):
         super().grid(padx=padx, pady=pady, sticky=sticky, **kwargs)

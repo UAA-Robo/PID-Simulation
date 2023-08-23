@@ -12,10 +12,11 @@ class Plot(FigureCanvasTkAgg):
                  controllers: list[Controller],
                  update_period: float = 0.2,  # second
                  ):
-        self.fig = plt.figure(layout='tight', figsize=(6,4))  # 
+        
+        self.fig = plt.figure(layout='constrained', figsize=(4,3))
         super().__init__(self.fig, master = master)
         
-
+        
         self.app = app
         self.controllers = controllers
         self.UPDATE_PERIOD = update_period
@@ -27,7 +28,6 @@ class Plot(FigureCanvasTkAgg):
         self.fig.set_facecolor(dark_color)
         self.subplot = self.fig.add_subplot(1, 1, 1)
         self.subplot.set_facecolor(dark_color)
-        
     
         for side in ["bottom", "top", "right", "left"]: 
             self.subplot.spines[side].set_color(self.light_color)
@@ -37,7 +37,7 @@ class Plot(FigureCanvasTkAgg):
         plt.rcParams.update({'text.color': self.light_color,'axes.labelcolor': self.light_color})
 
         # Start continuos callback
-        self.app.after(int(self.UPDATE_PERIOD * 1000), self.update_plot_callback) 
+        self.update_plot_callback()
     
 
 
