@@ -23,7 +23,6 @@ class ControllerGUI:
         """
         @brief   Should be called to display the GUI popup.
         """
-        #self.app.after(int(self.PLOTTING_PERIOD * 1000), self.update_values_continuously)
         self.app.mainloop()
 
     def set_gui_layout(self) -> None:
@@ -71,6 +70,7 @@ class ControllerGUI:
             left_frame_row.count()
 
         Plot(self.app, right_frame, self.controllers)
+
 
     class  Counter:
         """
