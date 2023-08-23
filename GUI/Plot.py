@@ -1,4 +1,5 @@
 import customtkinter as ctk 
+import tkinter as tk
 from Controllers.Controller import Controller
 
 import matplotlib.pyplot as plt
@@ -11,7 +12,7 @@ class Plot(FigureCanvasTkAgg):
                  controllers: list[Controller],
                  update_period: float = 0.2,  # second
                  ):
-        self.fig = plt.figure(layout='tight', figsize=(4, 2.5))
+        self.fig = plt.figure(layout='tight', figsize=(6,4))  # 
         super().__init__(self.fig, master = master)
         
 
@@ -51,7 +52,6 @@ class Plot(FigureCanvasTkAgg):
             self.subplot.plot(controller.process.time_log, controller.process.value_log, 
                               label =controller.controller_name, linestyle="-")
         
-
         plt.xticks(rotation=45, ha="right")
         plt.legend(facecolor="#323232", frameon=False)
         plt.title("Process")
@@ -60,7 +60,8 @@ class Plot(FigureCanvasTkAgg):
         plt.ylim([0, 100])
 
         self.draw()
-        self.get_tk_widget().grid(row=0, column=0, padx=10, pady=10)
+        self.get_tk_widget().grid(row=0, column=0,sticky=tk.NSEW)
+        
 
         # ask the mainloop to call this method again in the measurement period
         self.app.after(int(self.UPDATE_PERIOD * 1000), self.update_plot_callback)
