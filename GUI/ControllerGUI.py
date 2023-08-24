@@ -38,10 +38,12 @@ class ControllerGUI:
         self.app.columnconfigure(1, weight=1)
         self.app.rowconfigure(0, weight=1)
         
-        left_frame = tk.Frame(self.app)
-        left_frame.grid(row=0, column=0, padx=10, pady=5, sticky=tk.NSEW)
+        dark_color = "#323232"
+        
+        left_frame = tk.Frame(self.app, bg=dark_color)
+        left_frame.grid(row=0, column=0, padx=10, pady=5, sticky=tk.NSEW, )
 
-        right_frame = tk.Frame(self.app)  # 
+        right_frame = tk.Frame(self.app, bg=dark_color) 
         right_frame.grid(row=0, column=1, padx=10, pady=5, sticky=tk.NSEW)
         right_frame.grid_columnconfigure((0), weight=1, )
         right_frame.grid_rowconfigure((0), weight=1)
