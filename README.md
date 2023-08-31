@@ -7,7 +7,7 @@ This program is designed to help you learn how PIDs work, how to tune them, and 
 In the GUI, you can see the affects of the PID on the Process Value as you change the **Setpoint** and tune the PID. The GUI also shows you a Bang-Bang Controller alongside the PID so you can see why PID controllers instead of Bang-Bang Controllers. 
 
 
-**STATUS.** This project is in progress. The tank simulator, PID, and Bang-bang Controller are finished. The tkinter GUI to show the graph is also functional, but badly needs beautification. A visual representation of the tank also needs to be made.
+**STATUS.** This project is in progress. The tank simulator, PID, and Bang-bang Controller are finished. However, a visual representation of the tank needs to be made and the controller value needs to be displayed.
 
 ## Setup
 In order to install all the dependencies needed for this application, run 
