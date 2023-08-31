@@ -3,7 +3,7 @@ from time import sleep
 from Controllers.BangBang import BangBang
 from Controllers.PID import PID
 import random
-from ControllerGUI import ControllerGUI
+from GUI.ControllerGUI import ControllerGUI
 
 
 def update_tank_level(controller:PID|BangBang) -> None:
@@ -18,14 +18,14 @@ def update_tank_level(controller:PID|BangBang) -> None:
     """
     tank_level = 0
     MEASUREMENT_PERIOD = 0.1 # Seconds
-    print("Producing Simulated Tank Values...")
+    #print("Producing Simulated Tank Values...")
     while(True):
         input_flow = random.random() * 8 # 0-8 cm^3/sec, will be the same random input each time
         output_flow = controller.update_control_value(tank_level, MEASUREMENT_PERIOD)
         tank_level += (input_flow - output_flow) * MEASUREMENT_PERIOD
+        
         #print(f"Flow In: {input_flow:.2f} |   Flow Out: {output_flow:.2f} | Tank level: {tank_level:.2f}")
         sleep(MEASUREMENT_PERIOD)
-
 
 
 if __name__ == '__main__':

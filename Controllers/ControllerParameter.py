@@ -13,22 +13,6 @@ class ControllerParameter:
         # Stores value data for graphing
         self._time_log = []
         self._value_log = []
-
-    def increment_value(self) -> None:
-        """
-        @brief   Increments the value by the adjust amount. Best for buttons in a GUI.
-        """
-        if not self._adjust_amount:
-            return
-        self._value += self._adjust_amount
-
-    def decrement_value(self) -> None:
-        """
-        @brief   Decrements the value by the adjust amount. Best for buttons in a GUI.
-        """
-        if not self._adjust_amount:
-            return
-        self._value -= self._adjust_amount
     
 
     @property
