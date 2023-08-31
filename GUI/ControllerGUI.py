@@ -4,13 +4,14 @@ import customtkinter as ctk
 from GUI.ParameterSpinbox import ParameterSpinbox
 from GUI.ParameterDisplay import ParameterDisplay
 from GUI.Plot import Plot
+from Controllers.Controller import Controller
 
 class ControllerGUI:
     """
     @brief    GUI for graphically viewing changes in process values affected by controller(s) 
               overtime. Allows changing the setpoint and tuning values for the controller. 
     """
-    def __init__(self, controllers:list):
+    def __init__(self, controllers:list[Controller]):
         """
         @param controllers    List of controllers with parent class Controller to display in 
                               the gui.
@@ -50,9 +51,14 @@ class ControllerGUI:
 
         left_frame_row = self.Counter()
         NUM_COLUMNS = 2
+
         ctk.CTkLabel(left_frame, text ="Feedback Controller Visualization", corner_radius=5, 
                      font=(None, 20))\
             .grid(row=left_frame_row.count(), column=0, columnspan=NUM_COLUMNS, pady=(40, 0))
+        
+        ParameterSpinbox(left_frame, [parameter.setpoint for parameter in self.controllers])\
+                .grid(row=left_frame_row.count(), column=0, columnspan=NUM_COLUMNS, pady=(40, 0)
+                      , sticky=tk.EW)
 
         for controller in self.controllers:
             ctk.CTkLabel(left_frame, text=controller.controller_name)\
@@ -60,13 +66,11 @@ class ControllerGUI:
             
             
             ParameterDisplay(self.app, left_frame, controller.process)\
-                .grid(row=left_frame_row.count(False), column=0)
+                .grid(row=left_frame_row.count(), column=0, columnspan=NUM_COLUMNS)
 
-            ParameterSpinbox(left_frame, controller.setpoint)\
-                .grid(row=left_frame_row.count(), column=1, padx=(0, 10))
 
             for tuning_parameter in controller.tuning_parameters:
-                ParameterSpinbox(left_frame, tuning_parameter)\
+                ParameterSpinbox(left_frame, [tuning_parameter])\
                 .grid(row=left_frame_row.count(), column= 0, columnspan=NUM_COLUMNS)
 
             left_frame_row.count()

@@ -6,8 +6,7 @@ class ParameterDisplay(ctk.CTkFrame):
     @brief    Frame to display a Controller Parameter name and value without any buttons/input
               to change it. Updates continuously as the tkinter gui is run.
     """
-    def __init__(self,
-                app: ctk.CTk, master:any, controller_parameter: ControllerParameter,
+    def __init__(self, app: ctk.CTk, master:any, controller_parameter: ControllerParameter,
                 update_period: float = 0.2):
         """
         @brief    Sets the layout for the frame.
